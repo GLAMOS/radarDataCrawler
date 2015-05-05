@@ -6,9 +6,11 @@
 # Created on: 29.04.2015
 
 '''
-moduledocs
+Main module to launch the analysis of ASCII-based radar data.
+
+The module starts the analysis of a given directory of L1 radar header file. Based on the header information, 
+all additional information an data a retrieved and converted as shapefile.
 '''
-#TODO: Include module description.
 
 # Imports
 from RadarDataLibraryCrawler import RadarDataLibraryCrawler

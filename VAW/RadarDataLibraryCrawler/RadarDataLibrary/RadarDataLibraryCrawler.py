@@ -14,6 +14,12 @@ from RadarData.RadarLine import RadarLine
 from RadarData.RadarDataShapefileWriter import EsriShapefileWriter
 
 class RadarDataLibraryCrawler(object):
+    '''
+    Helper class crawling through the given directories to retrieve all available radar data header files.
+    Based on the header files the detailed information about each individual radar survey line will be retrieved.
+    
+    The class allows further analysis and data storage of the found radar information.
+    '''
     
     __RADAR_DATA_FILE_TYPE = ".txt"
     
@@ -101,6 +107,10 @@ class RadarDataLibraryCrawler(object):
         return selectedFiles
     
     def writeGeometries(self):
+        """
+        Writes the found information of the radar lines and radar points into 
+        the given shapefiles.
+        """
         
         print "Number of header files found: " + str(self.__selectedFiles)
         
