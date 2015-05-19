@@ -9,6 +9,7 @@
 import os
 from os import walk
 from os.path import splitext, join
+import logging
 
 from RadarData.RadarLine import RadarLine
 from RadarData.RadarDataShapefileWriter import EsriShapefileWriter
@@ -23,6 +24,8 @@ class RadarDataLibraryCrawler(object):
     
     __RADAR_DATA_FILE_TYPE = ".txt"
     
+    __LOG_FILE_NAME        = "RadarCrawlerLog.log"
+    
     __headerDirectory    = None
     __dataDirectory      = None
     __shapeDirectory     = None
@@ -31,7 +34,6 @@ class RadarDataLibraryCrawler(object):
     
     __selectedFiles      = []
     
-
     @property
     def radarLineDataLineCount(self):
         return len(self.__selectedFiles)
@@ -58,6 +60,9 @@ class RadarDataLibraryCrawler(object):
         self.__shapefilePoint     = os.path.join(shapeDirectory, shapefileNamePoint)
         
         self.__selectedFiles = self.__buildRecursiveDirectoryTree(self.__headerDirectory, [self.__RADAR_DATA_FILE_TYPE])
+        
+        # Getting the default of the logger set.
+        logging.basicConfig(filename = self.__LOG_FILE_NAME, level = logging.INFO)
 
     
     def __buildRecursiveDirectoryTree(self, path, fileExtensions):
@@ -112,7 +117,9 @@ class RadarDataLibraryCrawler(object):
         the given shapefiles.
         """
         
-        print "Number of header files found: " + str(self.__selectedFiles)
+        message = "Number of header files found: " + str(len(self.__selectedFiles)) 
+        print message 
+        logging.info(message)
         
         fileCounter = 0
         
@@ -121,7 +128,9 @@ class RadarDataLibraryCrawler(object):
             fileCounter = fileCounter + 1
             doAppend = True
             
-            print str(fileCounter) + " -> " + selectedFile
+            message = str(fileCounter) + " -> " + selectedFile
+            print message 
+            logging.info(message)
             
             radarLine = RadarLine(selectedFile, self.__dataDirectory)
             radarLine.analyzeRadarData()
@@ -133,7 +142,7 @@ class RadarDataLibraryCrawler(object):
             esriShapefileWriter.writeData()
             
             print str(radarLine)
-            
+            logging.info(str(radarLine))
             
             
             
