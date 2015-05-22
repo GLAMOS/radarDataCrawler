@@ -12,16 +12,16 @@ import datetime
 class Test(unittest.TestCase):
 
     # User input data
-    __testHeaderFile  = r"\\itetnas01.ee.ethz.ch\glazioarch\_INCOMING\20090331_Aletsch\L1\20090331_Aletsch_BGR_flight1_profil-001_Header.txt"
-    __testDataPath    = r"\\itetnas01.ee.ethz.ch\glazioarch\_INCOMING\20090331_Aletsch\L2"
+    __testHeaderFile  = r"\\itetnas01.ee.ethz.ch\glazioarch\GlacioBaseData\RadarData\20131203_Titlis\L1\20131203_Titlis_GSSI_flight1_profil-002_Header.txt"
+    __testDataPath    = r"\\itetnas01.ee.ethz.ch\glazioarch\GlacioBaseData\RadarData\20131203_Titlis\L2"
     
     # Retrieved data
-    __testDataFile         = r"\\itetnas01.ee.ethz.ch\glazioarch\_INCOMING\20090331_Aletsch\L2\20090331_Aletsch_BGR_flight1_profil-001_Bedrock.txt"
-    __numberOfPoints       = 2013
-    __testSummaryFile      = r"\\itetnas01.ee.ethz.ch\glazioarch\_INCOMING\20090331_Aletsch\L2\20090331_Aletsch_BGR_flight1_profil-001_Summary.pdf"
-    __testBedrockImageFile = r"\\itetnas01.ee.ethz.ch\glazioarch\_INCOMING\20090331_Aletsch\L2\20090331_Aletsch_BGR_flight1_profil-001_Bedrock.jpg"
-    __testMapImageFile     = r"\\itetnas01.ee.ethz.ch\glazioarch\_INCOMING\20090331_Aletsch\L2\20090331_Aletsch_BGR_flight1_profil-001_Map.jpg"
-    __testMigImageFile     = r"\\itetnas01.ee.ethz.ch\glazioarch\_INCOMING\20090331_Aletsch\L2\20090331_Aletsch_BGR_flight1_profil-001_Mig.jpg"
+    __testDataFile         = r"\\itetnas01.ee.ethz.ch\glazioarch\GlacioBaseData\RadarData\20131203_Titlis\L2\20131203_Titlis_GSSI_flight1_profil-002_Bedrock.txt"
+    __numberOfPoints       = 1010
+    __testSummaryFile      = r"\\itetnas01.ee.ethz.ch\glazioarch\GlacioBaseData\RadarData\20131203_Titlis\L2\20131203_Titlis_GSSI_flight1_profil-002_Summary.pdf"
+    __testBedrockImageFile = r"\\itetnas01.ee.ethz.ch\glazioarch\GlacioBaseData\RadarData\20131203_Titlis\L2\20131203_Titlis_GSSI_flight1_profil-002_Bedrock.jpg"
+    __testMapImageFile     = r"\\itetnas01.ee.ethz.ch\glazioarch\GlacioBaseData\RadarData\20131203_Titlis\L2\20131203_Titlis_GSSI_flight1_profil-002_Map.jpg"
+    __testMigImageFile     = r"\\itetnas01.ee.ethz.ch\glazioarch\GlacioBaseData\RadarData\20131203_Titlis\L2\20131203_Titlis_GSSI_flight1_profil-002_Proc2.jpg"
 
     # Radar line object to be tested.
     __radarLine = None
@@ -52,59 +52,63 @@ class Test(unittest.TestCase):
         self.assertEqual(self.__radarLine.migImageFile,     self.__testMigImageFile,     "Test of MigImageFile property")
         
     def testFrequencyProperty(self):
-        self.assertEqual(self.__radarLine.frequency, 30, "Test of parsed frequency")
+        self.assertEqual(self.__radarLine.frequency, 65, "Test of parsed frequency")
         
     def testLineProperty(self):
-        self.assertEqual(self.__radarLine.line, "001", "Test of parsed line identifier")
+        self.assertEqual(self.__radarLine.line, "002", "Test of parsed line identifier")
         
     def testLineIdProperty(self):
-        self.assertEqual(self.__radarLine.lineId, "20090331_001", "Test of concatenated line identifier")
+        self.assertEqual(self.__radarLine.lineId, "20130312_002", "Test of concatenated line identifier")
         
     def testDateProperty(self):
-        self.assertEqual(self.__radarLine.date, datetime.date(2009, 03, 31), "Test of parsed date")
+        self.assertEqual(self.__radarLine.date, datetime.date(2013, 12, 03), "Test of parsed date")
         
     def testAcqusitionTypeProperty(self):
         self.assertEqual(self.__radarLine.acquisitionType, "AIRBORN", "Test of parsed acquisition type")
         
     def testInstrumentProperty(self):
-        self.assertEqual(self.__radarLine.instrument, "BGR-P30", "Test of parsed instrument")
+        self.assertEqual(self.__radarLine.instrument, "GSSI", "Test of parsed instrument")
         
     def testCountRadarPointsProperty(self):
         self.assertEqual(self.__radarLine.countRadarPoints, self.__numberOfPoints, "Amount of analyzed radar points")
         
     def testCountRadarPointBedrockMeasurementResult(self):
-        bedrockMeasurementResult = self.__radarLine.radarPoints[1973].results[0]
+        bedrockMeasurementResult = self.__radarLine.radarPoints[230].results[0]
 
-        self.assertEqual(bedrockMeasurementResult.zBed,      2555.906, "Elevation of bedrock")
-        self.assertEqual(bedrockMeasurementResult.zIce,      2686.200, "Elevation of ice surface")
-        self.assertEqual(bedrockMeasurementResult.thickness,  130.294, "Ice thickness")
+        self.assertEqual(bedrockMeasurementResult.zBed,      2319.518, "Elevation of bedrock")
+        self.assertEqual(bedrockMeasurementResult.zIce,      2459.530, "Elevation of ice surface")
+        self.assertEqual(bedrockMeasurementResult.thickness,  140.012, "Ice thickness")
         self.assertEqual(bedrockMeasurementResult.quality,          2, "Quality")
         
     def testCountRadarPointBedrockMeasurementCountResults(self):
         
-        self.assertEqual(self.__radarLine.radarPoints[1975].countResults, 1, "Multiple results")
-        self.assertEqual(self.__radarLine.radarPoints[1976].countResults, 2, "Multiple results")
-        self.assertEqual(self.__radarLine.radarPoints[1977].countResults, 2, "Multiple results")
-        self.assertEqual(self.__radarLine.radarPoints[1978].countResults, 3, "Multiple results")
-        self.assertEqual(self.__radarLine.radarPoints[1979].countResults, 1, "Multiple results")
+        self.assertEqual(self.__radarLine.radarPoints[250].countResults, 2, "Point with two sets of results")
+        self.assertEqual(self.__radarLine.radarPoints[300].countResults, 2, "Point with two sets of results")
+        self.assertEqual(self.__radarLine.radarPoints[350].countResults, 2, "Point with two sets of results")
+        self.assertEqual(self.__radarLine.radarPoints[400].countResults, 2, "Point with two sets of results")
+        self.assertEqual(self.__radarLine.radarPoints[450].countResults, 2, "Point with two sets of results")
         
     def testCountRadarPointBedrockMeasurementMultipleResult(self):
-        bedrockMeasurement = self.__radarLine.radarPoints[1978]
+        
+        bedrockMeasurement = self.__radarLine.radarPoints[111]
+        
+        if bedrockMeasurement.countResults != 3:
+            self.fail("Not correct number of mutliple results")
 
-        self.assertEqual(bedrockMeasurement.results[0].zBed,      2560.908, "Elevation of bedrock")
-        self.assertEqual(bedrockMeasurement.results[0].zIce,      2685.770, "Elevation of ice surface")
-        self.assertEqual(bedrockMeasurement.results[0].thickness,  124.862, "Ice thickness")
+        self.assertEqual(bedrockMeasurement.results[0].zBed,      2333.282, "Elevation of bedrock")
+        self.assertEqual(bedrockMeasurement.results[0].zIce,      2452.060, "Elevation of ice surface")
+        self.assertEqual(bedrockMeasurement.results[0].thickness,  118.778, "Ice thickness")
         self.assertEqual(bedrockMeasurement.results[0].quality,          2, "Quality")
         
-        self.assertEqual(bedrockMeasurement.results[1].zBed,      2540.816, "Elevation of bedrock")
-        self.assertEqual(bedrockMeasurement.results[1].zIce,      2687.400, "Elevation of ice surface")
-        self.assertEqual(bedrockMeasurement.results[1].thickness,  146.584, "Ice thickness")
-        self.assertEqual(bedrockMeasurement.results[1].quality,          2, "Quality")
+        self.assertEqual(bedrockMeasurement.results[1].zBed,      2358.286, "Elevation of bedrock")
+        self.assertEqual(bedrockMeasurement.results[1].zIce,      2452.060, "Elevation of ice surface")
+        self.assertEqual(bedrockMeasurement.results[1].thickness,   93.774, "Ice thickness")
+        self.assertEqual(bedrockMeasurement.results[1].quality,         12, "Quality")
         
-        self.assertEqual(bedrockMeasurement.results[2].zBed,      2568.520, "Elevation of bedrock")
-        self.assertEqual(bedrockMeasurement.results[2].zIce,      2684.840, "Elevation of ice surface")
-        self.assertEqual(bedrockMeasurement.results[2].thickness,  116.319, "Ice thickness")
-        self.assertEqual(bedrockMeasurement.results[2].quality,          2, "Quality")
+        #self.assertEqual(bedrockMeasurement.results[2].zBed,      2301.560, "Elevation of bedrock")
+        self.assertEqual(bedrockMeasurement.results[2].zIce,      2452.060, "Elevation of ice surface")
+        #self.assertEqual(bedrockMeasurement.results[2].thickness,  150.500, "Ice thickness")
+        self.assertEqual(bedrockMeasurement.results[2].quality,         22, "Quality")
 
 
 if __name__ == "__main__":

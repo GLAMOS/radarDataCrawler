@@ -62,7 +62,7 @@ class RadarDataLibraryCrawler(object):
         self.__selectedFiles = self.__buildRecursiveDirectoryTree(self.__headerDirectory, [self.__RADAR_DATA_FILE_TYPE])
         
         # Getting the default of the logger set.
-        logging.basicConfig(filename = self.__LOG_FILE_NAME, level = logging.INFO)
+        logging.basicConfig(filename = self.__LOG_FILE_NAME, level = logging.WARNING)
 
     
     def __buildRecursiveDirectoryTree(self, path, fileExtensions):
