@@ -373,24 +373,31 @@ class RadarLine(object):
                 
                 bedrockMeasurement = BedrockMeasurement(xCoord, yCoord)
                 
-                offset = 3 # Number of columns with a general meaning (e.g. profile id, easting, nothing)
+                # ------------ Setup of counters and 
+                # Number of columns with a general meaning (e.g. profile id, easting, nothing)
+                offset = 3 
+                # Setting a counter to 4 which indicates the number of columns of a first result set which are analyzed in any case.
+                analyzedResultColumns = 4
+                # In case of multiple results, only the column Thickness and Quality are repeated.
+                # The number 2 indicates the amount of repeating columns for the result.
+                numberRepeatingColumns = 2
+                
                 if (len(lineContents) - offset) % 2 != 0:
                     message = "Number of data column does not fit!"
                     raise RadarFileFormatException(self.__dataFile, message)
                 
-                # In case of multiple results, only the column Thickness and Quality are repeated.
-                numberRepeatingColumns = 2 # The number 2 indicates the amount of repeating columns for the result.
-                if len(lineContents) == offset + 4:
+
+                if len(lineContents) == offset + analyzedResultColumns:
                     numberResults = 1
                 else:
                     numberColumns = len(lineContents)
-                    numberResults = ((numberColumns - 7) / numberRepeatingColumns) + 1 
+                    numberResults = ((numberColumns - (offset + analyzedResultColumns)) / numberRepeatingColumns) + 1 
                 
                 zBed = 0.0
                 zIce = 0.0
                 thickness = 0.0
                 quality = 0
-                                    
+                                                   
                 # Getting all the detailed measurements parsed.
                 j = 0
                 while j < numberResults:
@@ -438,7 +445,7 @@ class RadarLine(object):
                         i = 0
                         while i < 2:
                             
-                            value = lineContents[offset + 4 + (j * i)]
+                            value = lineContents[offset + analyzedResultColumns + i]
                             
                             
                             if i == 0:
@@ -453,6 +460,9 @@ class RadarLine(object):
                                     raise RadarFileFormatException(self.__dataFile, "Quality value " + value + " wrongly formated in line " + str(lineCounter))
                         
                             i = i + 1
+                            
+                        # Increasing the number of analyzed result columns with the number of repeating columns.
+                        analyzedResultColumns += numberRepeatingColumns
 
                         # Reading of the existing ice surface.
                         zIce = bedrockMeasurement.results[0].zIce  
