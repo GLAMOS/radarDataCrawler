@@ -92,24 +92,49 @@ class Test(unittest.TestCase):
     def testCountRadarPointBedrockMeasurementMultipleResult(self):
         
         bedrockMeasurement = self.__radarLine.radarPoints[111]
-        
+         
         if bedrockMeasurement.countResults != 3:
-            self.fail("Not correct number of mutliple results")
-
+            self.fail("Not correct number of multiple results")
+ 
         self.assertEqual(bedrockMeasurement.results[0].zBed,      2333.282, "Elevation of bedrock")
         self.assertEqual(bedrockMeasurement.results[0].zIce,      2452.060, "Elevation of ice surface")
         self.assertEqual(bedrockMeasurement.results[0].thickness,  118.778, "Ice thickness")
         self.assertEqual(bedrockMeasurement.results[0].quality,          2, "Quality")
-        
+         
         self.assertEqual(bedrockMeasurement.results[1].zBed,      2358.286, "Elevation of bedrock")
         self.assertEqual(bedrockMeasurement.results[1].zIce,      2452.060, "Elevation of ice surface")
         self.assertEqual(bedrockMeasurement.results[1].thickness,   93.774, "Ice thickness")
         self.assertEqual(bedrockMeasurement.results[1].quality,         12, "Quality")
-        
-        #self.assertEqual(bedrockMeasurement.results[2].zBed,      2301.560, "Elevation of bedrock")
+         
+        self.assertEqual(bedrockMeasurement.results[2].zBed,      2301.560, "Elevation of bedrock")
         self.assertEqual(bedrockMeasurement.results[2].zIce,      2452.060, "Elevation of ice surface")
-        #self.assertEqual(bedrockMeasurement.results[2].thickness,  150.500, "Ice thickness")
-        #self.assertEqual(bedrockMeasurement.results[2].quality,         22, "Quality")
+        self.assertEqual(bedrockMeasurement.results[2].thickness,  150.500, "Ice thickness")
+        self.assertEqual(bedrockMeasurement.results[2].quality,         22, "Quality")
+         
+        bedrockMeasurement = self.__radarLine.radarPoints[112]
+        
+        if bedrockMeasurement.countResults != 4:
+            self.fail("Not correct number of multiple results")
+
+        self.assertEqual(bedrockMeasurement.results[0].zBed,      2333.193,     "Elevation of bedrock")
+        self.assertEqual(bedrockMeasurement.results[0].zIce,      2452.110,     "Elevation of ice surface")
+        self.assertEqual(bedrockMeasurement.results[0].thickness,  118.917,     "Ice thickness")
+        self.assertEqual(bedrockMeasurement.results[0].quality,          2,     "Quality")
+        
+        self.assertAlmostEqual(bedrockMeasurement.results[1].zBed, 2358.240, 3, "Elevation of bedrock")
+        self.assertEqual(bedrockMeasurement.results[1].zIce,       2452.110,    "Elevation of ice surface")
+        self.assertEqual(bedrockMeasurement.results[1].thickness,    93.870,    "Ice thickness")
+        self.assertEqual(bedrockMeasurement.results[1].quality,          12,    "Quality")
+        
+        self.assertAlmostEqual(bedrockMeasurement.results[2].zBed, 2340.999, 3, "Elevation of bedrock")
+        self.assertEqual(bedrockMeasurement.results[2].zIce,       2452.110,    "Elevation of ice surface")
+        self.assertEqual(bedrockMeasurement.results[2].thickness,   111.111,    "Ice thickness")
+        self.assertEqual(bedrockMeasurement.results[2].quality,          22,    "Quality")
+         
+        self.assertAlmostEqual(bedrockMeasurement.results[3].zBed, 2229.888, 3, "Elevation of bedrock")
+        self.assertEqual(bedrockMeasurement.results[3].zIce,       2452.110,    "Elevation of ice surface")
+        self.assertEqual(bedrockMeasurement.results[3].thickness,   222.222,    "Ice thickness")
+        self.assertEqual(bedrockMeasurement.results[3].quality,          32,    "Quality")
 
 
 if __name__ == "__main__":
