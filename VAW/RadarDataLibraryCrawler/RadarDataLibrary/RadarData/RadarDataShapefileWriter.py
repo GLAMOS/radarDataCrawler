@@ -198,11 +198,29 @@ class EsriShapefileWriter(RadarDataShapefileWriter):
             
         lineGeometry = arcpy.Polyline(array)
         
+        # Setting an empty string in case of possible Null values.
+        if self._radarLine.summaryFile == None:
+            summaryFile = ""
+        else:
+            summaryFile = self._radarLine.summaryFile
+        if self._radarLine.bedrockImageFile == None:
+            bedrockImageFile = ""
+        else:
+            bedrockImageFile = self._radarLine.bedrockImageFile
+        if self._radarLine.mapImageFile == None:
+            mapImageFile = ""
+        else:
+            mapImageFile = self._radarLine.mapImageFile
+        if self._radarLine.migImageFile == None:
+            migImageFile = ""
+        else:
+            migImageFile = self._radarLine.migImageFile
+        
         cursor.insertRow([ \
         lineGeometry, \
         self._radarLine.acquisitionType, self._radarLine.instrument, self._radarLine.frequency, \
-        self._radarLine.lineId, self._radarLine.date, self._radarLine.summaryFile, \
-        self._radarLine.bedrockImageFile, self._radarLine.mapImageFile, self._radarLine.migImageFile, \
+        self._radarLine.lineId, self._radarLine.date, summaryFile, \
+        bedrockImageFile, mapImageFile, migImageFile, \
         ])
         
         del(cursor)
