@@ -30,7 +30,8 @@ class RadarDataShapefileWriter(RadarDataWriter):
     # Field names for lines
     _FIELD_NAME_LINE_ACQUISITION_TYPE = "ACQ_TYPE"
     _FIELD_NAME_LINE_INSTRUMENT       = "INSTRUMENT"
-    _FIELD_NAME_LINE_FREQUENCY        = "FREQUENCY"
+    _FIELD_NAME_LINE_FREQUENCY_FROM   = "FREQ_FROM"
+    _FIELD_NAME_LINE_FREQUENCY_TO     = "FREQ_TO"
     _FIELD_NAME_LINE_SUMMARY          = "SUMMARY"
     _FIELD_NAME_LINE_IMAGE_BEDROCK    = "BED"
     _FIELD_NAME_LINE_IMAGE_MAP        = "MAP"
@@ -142,7 +143,8 @@ class EsriShapefileWriter(RadarDataShapefileWriter):
         # ---
         arcpy.AddField_management(shapefileName, self._FIELD_NAME_LINE_ACQUISITION_TYPE,   "TEXT", "", "",  50,  "", "NULLABLE", "")
         arcpy.AddField_management(shapefileName, self._FIELD_NAME_LINE_INSTRUMENT      ,   "TEXT", "", "",  50,  "", "NULLABLE", "")
-        arcpy.AddField_management(shapefileName, self._FIELD_NAME_LINE_FREQUENCY       , "DOUBLE", "", "", "", "", "NULLABLE", "")
+        arcpy.AddField_management(shapefileName, self._FIELD_NAME_LINE_FREQUENCY_FROM  , "DOUBLE", "", "", "", "", "NULLABLE", "")
+        arcpy.AddField_management(shapefileName, self._FIELD_NAME_LINE_FREQUENCY_TO    , "DOUBLE", "", "", "", "", "NULLABLE", "")
 
         # Fields with file information
         arcpy.AddField_management(shapefileName, self._FIELD_NAME_LINE_SUMMARY      ,  "TEXT", "", "", 500,  "", "NULLABLE", "")
@@ -188,7 +190,8 @@ class EsriShapefileWriter(RadarDataShapefileWriter):
         
         cursor = InsertCursor(self._shapeFileLine, [ \
                  "SHAPE@", \
-                 self._FIELD_NAME_LINE_ACQUISITION_TYPE, self._FIELD_NAME_LINE_INSTRUMENT, self._FIELD_NAME_LINE_FREQUENCY, \
+                 self._FIELD_NAME_LINE_ACQUISITION_TYPE, self._FIELD_NAME_LINE_INSTRUMENT, \
+                 self._FIELD_NAME_LINE_FREQUENCY_FROM, self._FIELD_NAME_LINE_FREQUENCY_TO, \
                  self._FIELD_NAME_PROFILE_ID, self._FIELD_NAME_DATE, self._FIELD_NAME_LINE_SUMMARY, \
                  self._FIELD_NAME_LINE_IMAGE_BEDROCK, self._FIELD_NAME_LINE_IMAGE_MAP, self._FIELD_NAME_LINE_IMAGE_MIG, \
                  ])
@@ -218,7 +221,8 @@ class EsriShapefileWriter(RadarDataShapefileWriter):
         
         cursor.insertRow([ \
         lineGeometry, \
-        self._radarLine.acquisitionType, self._radarLine.instrument, self._radarLine.frequency, \
+        self._radarLine.acquisitionType, self._radarLine.instrument, \
+        self._radarLine.frequencyFrom, self._radarLine.frequencyTo, \
         self._radarLine.lineId, self._radarLine.date, summaryFile, \
         bedrockImageFile, mapImageFile, migImageFile, \
         ])

@@ -52,8 +52,8 @@ class Test(unittest.TestCase):
         self.assertEqual(self.__radarLine.mapImageFileName,     os.path.split(self.__testMapImageFile)[1],     "Test of MapImageFile property")
         self.assertEqual(self.__radarLine.migImageFileName,     os.path.split(self.__testMigImageFile)[1],     "Test of MigImageFile property")
         
-    def testFrequencyProperty(self):
-        self.assertEqual(self.__radarLine.frequency, 65, "Test of parsed frequency")
+    def testFrequencyToProperty(self):
+        self.assertEqual(self.__radarLine.frequencyTo, 65, "Test of parsed frequency")
         
     def testLineProperty(self):
         self.assertEqual(self.__radarLine.line, "002", "Test of parsed line identifier")

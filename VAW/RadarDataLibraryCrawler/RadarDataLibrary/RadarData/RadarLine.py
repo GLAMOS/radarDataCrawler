@@ -51,7 +51,8 @@ class RadarLine(object):
 
     # Basic information of the line derived from the header file.
     __lineId          = ""
-    __frequency       = -1
+    __frequencyFrom   = -1
+    __frequencyTo     = -1
     __line            = "-999"
     __date            = datetime.date(1900, 01, 01)
     __acquisitionType = "UNKNOWN"
@@ -157,13 +158,21 @@ class RadarLine(object):
         return os.path.split(self.__migImageFile)[1]
     
     @property
-    def frequency(self):
-        return self.__frequency
+    def frequencyFrom(self):
+        return self.__frequencyFrom
     
-    @frequency.getter
-    def frequency(self):
-        return self.__frequency
+    @frequencyFrom.getter
+    def frequencyFrom(self):
+        return self.__frequencyFrom
+
+    @property
+    def frequencyTo(self):
+        return self.__frequencyFrom
     
+    @frequencyTo.getter
+    def frequencyTo(self):
+        return self.__frequencyTo
+
     @property
     def line(self):
         return self.__line
@@ -237,27 +246,42 @@ class RadarLine(object):
         if os.path.exists(self.__dataFile) == False:
             raise RadarFileNotFoundException(self.__dataFile)
         
+        # -----------------------------------------------------
         # Retrieving and test if the given auxiliary files are existing. Throwing exceptions if not existing.
+        # -----------------------------------------------------
+        # PDF with the summary of header, map and bedrock.
         self.__dataSummaryFile = self.__findAuxiliaryFile(dataPath, self.__SUMMARY_FILE_NAME, self.__SUMMARY_FILE_TYPE)
         if os.path.exists(self.__dataSummaryFile) == False:
-            raise RadarFileNotFoundException(self.__dataSummaryFile)
+            logging.warning("Auxiliary file not found: " + self.__dataSummaryFile)
+            self.__dataSummaryFile = None
+            #raise RadarFileNotFoundException(self.__dataSummaryFile)
         
+        # JPG of bedrock.
         self.__bedrockImageFile = self.__findAuxiliaryFile(dataPath, self.__BEDROCK_IMAGE_FILE_NAME, self.__BEDROCK_IMAGE_FILE_TYPE)
         if os.path.exists(self.__bedrockImageFile) == False:
-            raise RadarFileNotFoundException(self.__bedrockImageFile)
+            logging.warning("Auxiliary file not found: " + self.__bedrockImageFile)
+            self.__bedrockImageFile = None
+            #raise RadarFileNotFoundException(self.__bedrockImageFile)
         
+        # JPG of overview map.
         self.__mapImageFile = self.__findAuxiliaryFile(dataPath, self.__MAP_IMAGE_FILE_NAME, self.__MAP_IMAGE_FILE_TYPE)
         if os.path.exists(self.__mapImageFile) == False:
-            raise RadarFileNotFoundException(self.__mapImageFile)
+            logging.warning("Auxiliary file not found: " + self.__mapImageFile)
+            self.__mapImageFile = None
+            #raise RadarFileNotFoundException(self.__mapImageFile)
         
+        # JPG of migrated or processed data.
         self.__migImageFile = self.__findAuxiliaryFile(dataPath, self.__MIG_IMAGE_FILE_NAME, self.__MIG_IMAGE_FILE_TYPE)
         if os.path.exists(self.__migImageFile) == False:
             
             # In some cases instead of a mig file a proc2 file will be set
             self.__migImageFile = self.__findAuxiliaryFile(dataPath, self.__PROC2_IMAGE_FILE_NAME, self.__PROC2_IMAGE_FILE_TYPE)
             if os.path.exists(self.__migImageFile) == False:
-                message = "The files '" + self.__MIG_IMAGE_FILE_NAME + "' and '" + self.__PROC2_IMAGE_FILE_NAME + "' are missing."
-                raise RadarFileNotFoundException(message)
+                message = "The auxiliary files '" + self.__MIG_IMAGE_FILE_NAME + "' or '" + self.__PROC2_IMAGE_FILE_NAME + "' are missing."
+                logging.warning(message)
+                self.__migImageFile = None
+                #raise RadarFileNotFoundException(message)
+        # -----------------------------------------------------
 
         # Initializing a new list of individual radar points.
         self.__radarPoints = list()
@@ -330,7 +354,13 @@ class RadarLine(object):
                         self.__instrument = lineContents[3]
                         
                     elif lineContents[0] == "C03":
-                        self.__frequency = int(lineContents[4])
+                        frequencyString = lineContents[4]
+                        frequencyStringSplit = frequencyString.split("-")
+                        if len(frequencyStringSplit) == 2:
+                            self.__frequencyFrom = int(frequencyStringSplit[0])
+                            self.__frequencyTo   = int(frequencyStringSplit[1])
+                        else:
+                            self.__frequencyTo = int(frequencyString)
             
     
     def __str__(self):
