@@ -69,6 +69,14 @@ class RadarLine(object):
         return self.__headerFile
     
     @property
+    def headerFileName(self):
+        return os.path.split(self.__headerFile)[1]
+        
+    @headerFileName.getter
+    def headerFileName(self):
+        return os.path.split(self.__headerFile)[1]
+    
+    @property
     def dataFile(self):
         return self.__dataFile
     
@@ -77,12 +85,28 @@ class RadarLine(object):
         return self.__dataFile
     
     @property
+    def dataFileName(self):
+        return os.path.split(self.__dataFile)[1]
+
+    @dataFileName.getter
+    def dataFileName(self):
+        return os.path.split(self.__dataFile)[1]
+    
+    @property
     def summaryFile(self):
         return self.__dataSummaryFile
     
     @summaryFile.getter
     def summaryFile(self):
         return self.__dataSummaryFile
+ 
+    @property
+    def summaryFileName(self):
+        return os.path.split(self.__dataSummaryFile)[1]
+    
+    @summaryFileName.getter
+    def summaryFileName(self):
+        return os.path.split(self.__dataSummaryFile)[1]
     
     @property
     def bedrockImageFile(self):
@@ -91,6 +115,14 @@ class RadarLine(object):
     @bedrockImageFile.getter
     def bedrockImageFile(self):
         return self.__bedrockImageFile
+  
+    @property
+    def bedrockImageFileName(self):
+        return os.path.split(self.__bedrockImageFile)[1]
+    
+    @bedrockImageFileName.getter
+    def bedrockImageFileName(self):
+        return os.path.split(self.__bedrockImageFile)[1]      
 
     @property
     def mapImageFile(self):
@@ -101,12 +133,28 @@ class RadarLine(object):
         return self.__mapImageFile 
 
     @property
+    def mapImageFileName(self):
+        return os.path.split(self.__mapImageFile)[1]
+    
+    @mapImageFileName.getter
+    def mapImageFileName(self):
+        return os.path.split(self.__mapImageFile)[1] 
+
+    @property
     def migImageFile(self):
         return self.__migImageFile
     
     @migImageFile.getter
     def migImageFile(self):
         return self.__migImageFile
+
+    @property
+    def migImageFileName(self):
+        return os.path.split(self.__migImageFile)[1]
+    
+    @migImageFileName.getter
+    def migImageFileName(self):
+        return os.path.split(self.__migImageFile)[1]
     
     @property
     def frequency(self):
@@ -405,8 +453,7 @@ class RadarLine(object):
                                     raise RadarFileFormatException(self.__dataFile, "Quality value " + value + " wrongly formated in line " + str(lineCounter))
                         
                             i = i + 1
- 
-                       
+
                         # Reading of the existing ice surface.
                         zIce = bedrockMeasurement.results[0].zIce  
                         zBed = zIce - thickness                       
