@@ -111,7 +111,7 @@ class RadarDataLibraryCrawler(object):
     
         return selectedFiles
     
-    def writeGeometries(self):
+    def writeGeometries(self, doAppend):
         """
         Writes the found information of the radar lines and radar points into 
         the given shapefiles.
@@ -125,8 +125,7 @@ class RadarDataLibraryCrawler(object):
         
         for selectedFile in self.__selectedFiles:
             
-            fileCounter = fileCounter + 1
-            doAppend = True
+            fileCounter += 1
             
             message = str(fileCounter) + " -> " + selectedFile
             print message 
@@ -135,10 +134,19 @@ class RadarDataLibraryCrawler(object):
             radarLine = RadarLine(selectedFile, self.__dataDirectory)
             radarLine.analyzeRadarData()
             
-            if fileCounter == 1:
-                doAppend = False
-            
-            esriShapefileWriter = EsriShapefileWriter(radarLine, self.__shapefileLine, self.__shapefilePoint, doAppend)
+            # Definition if the data are appended to an existing data set.
+            # The master definition is to append: All data have to be appended.
+            doAppendFinal = True
+            if doAppend == True:
+                doAppendFinal = True
+            # The master definition is not the append: The first line will be creating a new set of shapefiles. 
+            else:
+                if fileCounter == 1:
+                    doAppendFinal = False
+                else:
+                    doAppendFinal = True
+                       
+            esriShapefileWriter = EsriShapefileWriter(radarLine, self.__shapefileLine, self.__shapefilePoint, doAppendFinal)
             esriShapefileWriter.writeData()
             
             print str(radarLine)
