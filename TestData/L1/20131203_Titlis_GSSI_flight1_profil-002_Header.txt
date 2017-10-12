@@ -1,0 +1,40 @@
+C01 Date: 03/12/2013	LINE: 002	AREA: 00                                         
+C02 INSTRUMENT: AIRBORN GSSI                                                    
+C03 OFFSET: 1.800000	FREQUENCY: 65                                              
+C04 DATA TRACES: 1010	SAMPLE INTERVAL: 1.855000	NUMBER SAMPLES: 1617            
+C05 DEWOW SOFTWARE: NoDewow                                                     
+C06                                                                             
+C07 PROCESSING PARAMETERS:                                                      
+C08 TIME WINDOW: 3000	MAXDEPTH: 200	BANDPASS: 40 100 4                          
+C09 VAIR: 0.299000	VICE: 0.168900                                               
+C10 HILBWIN START: 1100	HILBWIN LENGTH: 300	DRI: 0.750000                       
+C11 SVD LENGTH: 50	FX-DECON LENGTH: 50	GLOBALZSHIFT: 5                          
+C12                                                                             
+C13 PROCESSING APPLIED:                                                         
+C14   	DEFINE PROFILES	REDUCE TIME WINDOW                                       
+C15 SVD FILTER	BUTTWERWORTH BANDPASS FILTER	PICK SURFACE REFLECTION             
+C16 INCLUDE TOPOGRAPHY	BINNING	HILBERT ENVELOPE GAIN	FX-DECON                   
+C17 MIGRATION	TRACE NORMALIZATION                                               
+C18 END PROCESSING                                                              
+C19                                                                             
+C20 NUMBER OF SEGMENT POINTS: 03	Startpoint	Endpoint                            
+C21 676237.653763 179683.397974;	676358.350576 179879.122535                    
+C22 676358.350576 179879.122535;	676707.392711 180273.833734                    
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+C39 SEG Y REV1                                                                  
+C40 END OF TEXTUAL HEADER                                                       
