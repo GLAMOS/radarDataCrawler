@@ -254,13 +254,13 @@ class EsriShapefileWriter(RadarDataShapefileWriter):
             
             if radarPoint.countResults > 0:
                 zBed_1      = radarPoint.results[0].zBed
-                zIce_1      = radarPoint.results[0].zIce
+                zIce_1      = radarPoint.results[0].zIceSurface
                 thickness_1 = radarPoint.results[0].thickness
                 quality_1   = radarPoint.results[0].quality
                 
             if radarPoint.countResults >= 2:
                 zBed_2      = radarPoint.results[1].zBed
-                zIce_2      = radarPoint.results[1].zIce
+                zIce_2      = radarPoint.results[1].zIceSurface
                 thickness_2 = radarPoint.results[1].thickness
                 quality_2   = radarPoint.results[1].quality
             
