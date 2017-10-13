@@ -47,16 +47,16 @@ class Test(unittest.TestCase):
         
     def testBedrockMeasurementResultProperties(self):
         
-        zBed      = 2200
-        zIce      = 2400
-        thickness = 200
-        quality   = 2
+        zBed        = 2200
+        zIceSurface = 2400
+        thickness   = 200
+        quality     = 2
         
-        bedrockMeasurementResult = BedrockMeasurementResult(zBed, zIce, thickness, quality)
+        bedrockMeasurementResult = BedrockMeasurementResult(zIceSurface, zBed, thickness, quality)
         
-        self.assertEqual(bedrockMeasurementResult.zBed,      zBed,      "Elevation of bedrock")
-        self.assertEqual(bedrockMeasurementResult.zIce,      zIce,      "Elevation of ice surface")
-        self.assertEqual(bedrockMeasurementResult.thickness, thickness, "Ice thickness")
+        self.assertEqual(bedrockMeasurementResult.zBed,        zBed,        "Elevation of bedrock")
+        self.assertEqual(bedrockMeasurementResult.zIceSurface, zIceSurface, "Elevation of ice surface")
+        self.assertEqual(bedrockMeasurementResult.thickness,   thickness,   "Ice thickness")
 
 
 if __name__ == "__main__":
