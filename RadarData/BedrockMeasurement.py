@@ -74,12 +74,12 @@ class BedrockMeasurementResult(object):
         return self.__zBed
     
     @property
-    def zIce(self):
-        return self.__zIce
+    def zIceSurface(self):
+        return self.__zIceSurface
         
-    @zIce.getter
-    def zIce(self):
-        return self.__zIce
+    @zIceSurface.getter
+    def zIceSurface(self):
+        return self.__zIceSurface
     
     @property
     def thickness(self):
@@ -97,14 +97,27 @@ class BedrockMeasurementResult(object):
     def quality(self):
         return self.__quality     
     
-    def __init__(self, zBed, zIce, thickness, quality):
+    def __init__(self, zIceSurface, zBed, thickness, quality):
         '''
         Constructor
         '''
         #TODO: Include constructor description.
         
-        self.__zBed      = zBed
-        self.__zIce      = zIce
+        #TODO: Getting a better solution for the differences between old and new file formats.
+                            
+        # Determination what kind of file format is used:
+        # Old files: Bed IceSurface Thickness Quality
+        # New files: IceSurface Bed Thickness Quality
+        # General rule: zIceSurface > zBed
+
+        # In case of correct parameters
+        if zIceSurface > zBed:
+            self.__zBed        = zBed
+            self.__zIceSurface = zIceSurface
+        # In case of swapped parameters
+        else:
+            self.__zBed        = zIceSurface
+            self.__zIceSurface = zBed
         
         self.__thickness = thickness
         #TODO: What to do, if the given thickness is different of self.__zIce - self.__zBed?
@@ -112,5 +125,5 @@ class BedrockMeasurementResult(object):
         self.__quality   = quality
         
     def __str__(self):
-        message = "Bedrock: " + str(self.__zBed) + ", Ice surface: " + str(self.__zIce) + ", Thickness: " + str(self.__thickness) + ", Quality: " + str(self.__quality)
+        message = "Bedrock: " + str(self.__zBed) + ", Ice surface: " + str(self.__zIceSurface) + ", Thickness: " + str(self.__thickness) + ", Quality: " + str(self.__quality)
         return message
