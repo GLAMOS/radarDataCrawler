@@ -14,8 +14,10 @@ all additional information an data a retrieved and converted as shapefile.
 
 # Imports
 from RadarDataLibraryCrawler import RadarDataLibraryCrawler
+from RadarData.RadarFileNotFoundException import RadarFileNotFoundException
 import os
 from exceptions import OSError
+import logging
 
 class FileNotFoundError(OSError):
     pass
@@ -75,10 +77,17 @@ class RadarDirectoryStructure(object):
 # --------------- Start of Radar Data Parsing ----------------------------------------------------
 # ------------------------------------------------------------------------------------------------
 
+logging.basicConfig(filename='RadarCrawler.log',level=logging.DEBUG)
+
 # Setting up the data structure to be analyzed.
 radarDataDirectories = list()
 with open("RadarDataDirectories.txt") as inputDirectories:
     for dataFileLine in inputDirectories:
+        
+        # Ignoring all lines marked as comment.
+        if dataFileLine.startswith('#'):
+            continue
+        
         lineContents = dataFileLine.split()
         radarDataDirectories.append(RadarDirectoryStructure(lineContents[0], lineContents[1], lineContents[2]))
 
@@ -90,7 +99,8 @@ with open("RadarDataDirectories.txt") as inputDirectories:
 # radarDataStructure = RadarDirectoryStructure("20131203_Titlis", headerDirectory, dataDirectory)
 
 # ---------- Static settings for the parsing --------
-shapeDirectory  = r"\\itetnas01.ee.ethz.ch\glazioarch\GlacioBaseData\RadarData\gis"
+#shapeDirectory  = r"\\itetnas01.ee.ethz.ch\glazioarch\GlacioBaseData\RadarData\gis"
+shapeDirectory  = r"D:\temp\Radar"
 shapeFileNameLine  = "RadarArchive_L2_Lines_lv03.shp"
 shapeFileNamePoint = "RadarArchive_L2_Points_lv03.shp"
 # ---------------------------------------------------
@@ -100,13 +110,22 @@ structureAnalyzed = 0
 
 for radarDataDirectory in radarDataDirectories:
     
-    print "Currently analyzed structure:\n" + str(radarDataDirectory)
+    try:
     
-    radarDataLibraryCrawler = RadarDataLibraryCrawler(radarDataDirectory.headerDirectory, radarDataDirectory.dataDirectory, shapeDirectory, shapeFileNameLine, shapeFileNamePoint)
-    
-    if structureAnalyzed == 0:
-        radarDataLibraryCrawler.writeGeometries(False)
-    else:
-        radarDataLibraryCrawler.writeGeometries(True)
+        print "Currently analyzed structure:\n" + str(radarDataDirectory)
+        
+        radarDataLibraryCrawler = RadarDataLibraryCrawler(radarDataDirectory.headerDirectory, radarDataDirectory.dataDirectory, shapeDirectory, shapeFileNameLine, shapeFileNamePoint)
+        
+        if structureAnalyzed == 0:
+            radarDataLibraryCrawler.writeGeometries(False)
+        else:
+            radarDataLibraryCrawler.writeGeometries(True)
 
-    structureAnalyzed += 1
+    except RadarFileNotFoundException as radarFileNotFoundException:
+        
+        print str(radarFileNotFoundException)
+        
+        logging.warning(str(radarFileNotFoundException))
+        
+    finally:
+        structureAnalyzed += 1
