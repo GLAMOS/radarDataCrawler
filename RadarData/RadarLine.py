@@ -23,8 +23,10 @@ class RadarLine(object):
     
     # Constants
     __HEADER_FILE_NAME  = "Header"
+    #__HEADER_FILE_NAME  = "proc1"
     __HEADER_FILE_TYPE  = "txt"
     __BEDROCK_FILE_NAME = "Bedrock"
+    #__BEDROCK_FILE_NAME = "Coord"
     __BEDROCK_FILE_TYPE = "txt"
     __SUMMARY_FILE_NAME = "Summary"
     __SUMMARY_FILE_TYPE = "pdf"
@@ -229,7 +231,7 @@ class RadarLine(object):
     def radarPoints(self):
         return self.__radarPoints
 
-    def __init__(self, headerFile, dataPath):
+    def __init__(self, headerFile, headerPath, dataPath):
         '''
         Constructor
         '''
@@ -242,7 +244,7 @@ class RadarLine(object):
         self.__headerFile = headerFile
         
         # Retrieving and test if the giving data file is existing. Throwing exceptions if not existing.
-        self.__dataFile = self.__findDataFile(dataPath)
+        self.__dataFile = self.__findDataFile(headerPath, dataPath)
         if os.path.exists(self.__dataFile) == False:
             raise RadarFileNotFoundException(self.__dataFile)
         
@@ -290,13 +292,16 @@ class RadarLine(object):
         self.__parseHeaderFile()
 
 
-    def __findDataFile(self, dataPath):
+    def __findDataFile(self, headerPath, dataPath):
         splitPath = os.path.split(self.__headerFile)
         headerFileName = splitPath[1]
         
+        # Analyzing the depth of header and data directories.
+        relativeLocalPath = os.path.relpath(splitPath[0], headerPath)
+        
         dataFileName = headerFileName.replace(self.__HEADER_FILE_NAME, self.__BEDROCK_FILE_NAME)
 
-        return os.path.join(str(dataPath), str(dataFileName))
+        return os.path.join(str(dataPath), str(relativeLocalPath), str(dataFileName))
 
     
     def __findAuxiliaryFile(self, dataPath, auxiliaryFileName, auxiliaryFileType):
@@ -350,8 +355,16 @@ class RadarLine(object):
                         
                     elif lineContents[0] == "C02":
                         
-                        self.__acquisitionType = lineContents[2]
-                        self.__instrument = lineContents[3]
+                        if len(lineContents) == 4:
+                            self.__acquisitionType = lineContents[2]
+                            self.__instrument = lineContents[3]
+                        else:
+                            self.__acquisitionType = "Unknown"
+                            self.__instrument = "Unknown"
+                            
+                            message = "WARNING: Inconsistent notation of acquisition type and instrument in " + str(self.__headerFile) 
+                            print message
+                            logging.warning(message)
                         
                     elif lineContents[0] == "C03":
                         frequencyString = lineContents[4]
@@ -360,7 +373,16 @@ class RadarLine(object):
                             self.__frequencyFrom = int(frequencyStringSplit[0])
                             self.__frequencyTo   = int(frequencyStringSplit[1])
                         else:
-                            self.__frequencyTo = int(frequencyString)
+                            try:
+                                self.__frequencyTo = int(frequencyString)
+                            except:
+                                self.__frequencyFrom = -9999
+                                self.__frequencyTo = -9999
+                                
+                                message = "WARNING: Inconsistent notation of frequencies in " + str(self.__headerFile) 
+                                print message
+                                logging.warning(message)
+
             
     
     def __str__(self):
@@ -423,11 +445,11 @@ class RadarLine(object):
                     numberColumns = len(lineContents)
                     numberResults = ((numberColumns - (offset + analyzedResultColumns)) / numberRepeatingColumns) + 1 
                 
-                zBed = 0.0
-                zIce = 0.0
-                thickness = 0.0
-                quality = 0
-                                                   
+                zIceSurface = 0.0
+                zBed        = 0.0
+                thickness   = 0.0
+                quality     = 0
+                                 
                 # Getting all the detailed measurements parsed.
                 j = 0
                 while j < numberResults:
@@ -440,18 +462,18 @@ class RadarLine(object):
                         while i < 4:
                              
                             value = lineContents[offset + i]
-                             
+                            
                             if i == 0:
                                 try:
                                     zBed = self._castNumericValue(value)
                                 except ValueError:
-                                    raise RadarFileFormatException(self.__dataFile, "Bedrock value " + value + " wrongly formated in line " + str(lineCounter))
+                                    raise RadarFileFormatException(self.__dataFile, "Bedrock or Ice surface elevation value " + value + " wrongly formated in line " + str(lineCounter))
                             elif i == 1:
 
                                 try:
-                                    zIce = self._castNumericValue(value)
+                                    zIceSurface = self._castNumericValue(value)
                                 except ValueError:
-                                    raise RadarFileFormatException(self.__dataFile, "Ice surface elevation value " + value + " wrongly formated in line " + str(lineCounter))
+                                    raise RadarFileFormatException(self.__dataFile, "Bedrock or Ice surface elevation value " + value + " wrongly formated in line " + str(lineCounter))
                                 
                             elif i == 2:
                                 try:
@@ -462,8 +484,8 @@ class RadarLine(object):
                                 try:
                                     quality = self._castNumericValue(value)
                                 except ValueError:
-                                    raise RadarFileFormatException(self.__dataFile, "Quality value " + value + " wrongly formated in line " + str(lineCounter))
-                                
+                                    raise RadarFileFormatException(self.__dataFile, "Quality value " + value + " wrongly formated in line " + str(lineCounter))                
+
                             i = i + 1
                     
                     # In all other cases of multiple results, only two repeating columns have to been read (thickness and quality).
@@ -495,10 +517,10 @@ class RadarLine(object):
                         analyzedResultColumns += numberRepeatingColumns
 
                         # Reading of the existing ice surface.
-                        zIce = bedrockMeasurement.results[0].zIce  
-                        zBed = zIce - thickness                       
+                        zIceSurface = bedrockMeasurement.results[0].zIceSurface  
+                        zBed        = zIceSurface - thickness                       
                        
-                    bedrockMeasurementResult = BedrockMeasurementResult(zBed, zIce, thickness, quality)                     
+                    bedrockMeasurementResult = BedrockMeasurementResult(zIceSurface, zBed, thickness, quality)                     
                     bedrockMeasurement.addResult(bedrockMeasurementResult)
                     
                     j = j + 1
