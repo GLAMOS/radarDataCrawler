@@ -121,6 +121,11 @@ class RadarDataLibraryCrawler(object):
         print message 
         logging.info(message)
         
+        if len(self.__selectedFiles) == 0:
+            message = "WARNING: No header files found!" 
+            print message 
+            logging.info(message)
+        
         fileCounter = 0
         
         for selectedFile in self.__selectedFiles:
@@ -131,7 +136,7 @@ class RadarDataLibraryCrawler(object):
             print message 
             logging.info(message)
             
-            radarLine = RadarLine(selectedFile, self.__dataDirectory)
+            radarLine = RadarLine(selectedFile, self.__headerDirectory, self.__dataDirectory)
             radarLine.analyzeRadarData()
             
             # Definition if the data are appended to an existing data set.
