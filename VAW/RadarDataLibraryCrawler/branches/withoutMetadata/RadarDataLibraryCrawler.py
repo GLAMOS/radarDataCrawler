@@ -1,6 +1,8 @@
 # Copyright ETH-VAW / Glaciology
 #
 # Module      : Scripts.RadarDataLibrary.RadarDataLibraryCrawler
+#
+# Remarks     : No metadata taken in account for export
 # 
 # Created by: yvow
 # Created on: 05.05.2015
